@@ -15,7 +15,7 @@ protocol ImageCache {
 
 class TemporaryImageCache: ImageCache {
     private let cache = NSCache<NSURL, UIImage>()
-
+    
     subscript(_ url: URL) -> UIImage? {
         get { cache.object(forKey: url as NSURL) }
         set {
@@ -44,7 +44,7 @@ class ImageLoader: ObservableObject {
             self.image = cachedImage
             return
         }
-
+        
         cancellable = URLSession.shared.dataTaskPublisher(for: url)
             .map { UIImage(data: $0.data) }
             .replaceError(with: nil)
@@ -57,18 +57,18 @@ class ImageLoader: ObservableObject {
 struct CachedAsyncImage: View {
     @StateObject private var loader: ImageLoader
     private let imageBuilder: (UIImage) -> Image
-
+    
     init(url: URL,
          cache: ImageCache? = nil,
          image: @escaping (UIImage) -> Image = Image.init(uiImage:)) {
         _loader = StateObject(wrappedValue: ImageLoader(url: url, cache: cache))
         self.imageBuilder = image
     }
-
+    
     var body: some View {
         content
     }
-
+    
     private var content: some View {
         Group {
             if let uiImage = loader.image {

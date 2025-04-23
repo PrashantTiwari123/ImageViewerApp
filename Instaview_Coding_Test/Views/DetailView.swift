@@ -13,7 +13,7 @@ struct DetailView: View {
     @State private var isFavorited: Bool = false
     let image: UnsplashImageModel
     private let cache = TemporaryImageCache()
-
+    
     var body: some View {
         VStack(spacing: 16) {
             if let url = URL(string: image.urls.full) {
@@ -21,7 +21,7 @@ struct DetailView: View {
                     .aspectRatio(contentMode: .fit)
                     .cornerRadius(12)
             }
-
+            
             HStack {
                 AsyncImage(url: URL(string: image.user.profile_image.small)) { image in
                     image
@@ -63,7 +63,7 @@ struct DetailView: View {
                 }
             }
             .padding()
-
+            
             Spacer()
         }
         .onAppear {
@@ -76,7 +76,7 @@ struct DetailView: View {
         let context = PersistenceController.shared.container.viewContext
         let fetchRequest = NSFetchRequest<FavoriteImage>(entityName: "FavoriteImage")
         fetchRequest.predicate = NSPredicate(format: "id == %@", imageID)
-
+        
         do {
             let results = try context.fetch(fetchRequest)
             return !results.isEmpty
@@ -85,7 +85,7 @@ struct DetailView: View {
             return false
         }
     }
-
+    
     func saveImageToFavorites(image: UnsplashImageModel) {
         let context = PersistenceController.shared.container.viewContext
         let favorite = FavoriteImage(context: context)
@@ -93,7 +93,7 @@ struct DetailView: View {
         favorite.imageUrl = image.urls.small
         favorite.name = image.user.name
         favorite.userName = image.user.username
-
+        
         do {
             try context.save()
             print("Image saved to favorites.")
@@ -106,7 +106,7 @@ struct DetailView: View {
         let context = PersistenceController.shared.container.viewContext
         let fetchRequest = NSFetchRequest<FavoriteImage>(entityName: "FavoriteImage")
         fetchRequest.predicate = NSPredicate(format: "id == %@", imageID)
-
+        
         do {
             let results = try context.fetch(fetchRequest)
             for object in results {
@@ -117,7 +117,7 @@ struct DetailView: View {
             print("Failed to remove: \(error)")
         }
     }
-
+    
 }
 
 
